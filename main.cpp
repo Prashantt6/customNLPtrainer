@@ -11,10 +11,12 @@ std::unordered_map<std::string , int > word2id;
 std::unordered_map<int , std::string> id2word;
 void vocabulary(){
     
-    word2id["I"] = 1;
+    word2id["i"] = 1;
     word2id["love"] = 2;
-    word2id["Nepal"] = 3;
-    word2id["You"] = 4;
+    word2id["nepal"] = 3;
+    word2id["you"] = 4;
+    word2id["hate"] = 5;
+    word2id["cpp"] = 6;
 
     for(const auto& pair : word2id){
         id2word[pair.second] = pair.first;
@@ -46,7 +48,11 @@ std::vector<std::string> tokenize(const std::string &input){
     
     std::istringstream iss(input);
     std::string temp;
+    
     while(iss >> temp){
+        for(char &c : temp ){
+        c = tolower(c);
+        }
         words.push_back(temp);
     }
     return words;
@@ -68,14 +74,64 @@ void display(const std::vector<int> &numseq){
         std::string word = id_to_word(i);
         std::cout<<word<<" ";
     }
+    std::cout<<std::endl;
 }
 void wordcount(const std::vector<std::string>words){
     std::cout<<"Word_Count :" << words.size()<<std::endl;
 }
 
+void defrespond(const std::vector<int> numseq){
+    for(int i : numseq){
+        if(i == 2){
+            std::cout<<"love is a beautiful thing"<<std::endl;
+        }
+        else if( i ==3 ){
+            std::cout<<"Nepal is a amazing country"<<std::endl;
+        }
+    }
+}
+void bagofwords(const std::vector<int> numseq){
+    
+    int vocab = 6;
+    std::vector<int>bow(vocab , 0);
+    for(int i : numseq){
+        if(i>0){
+            bow[i-1]++;
+        }
+    }
+    int sentiment = 0;
+    std::unordered_map<int , int> word_sentiment;
+    word_sentiment[1] = 0;
+    word_sentiment[2] = 1;
+    word_sentiment[3] = 0;
+    word_sentiment[4] = 0;
+    word_sentiment[5] = -1;
+    word_sentiment[6] = 0;
+
+    for(int i : numseq ){
+        if(word_sentiment.find(i) != word_sentiment.end()){
+            sentiment += bow[i] * word_sentiment[i];
+        }
+    }
+    
+    if(sentiment >0){
+        std::cout<<"Positive statement"<<std::endl;
+    }
+    else if(sentiment < 0){
+        std::cout<<"Negative statement"<<std::endl;
+    }
+    else {
+        std::cout<<"Neutral statement"<<std::endl;
+    }
+}
+
+
+
 void model(const std::vector<std::string> words, const std::vector<int>numseq){
     wordcount(words);
     display(numseq);
+    defrespond(numseq);
+    bagofwords(numseq);
     
     
 }
