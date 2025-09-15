@@ -23,6 +23,26 @@ void vocabulary(){
     }
 
 }
+// std::unordered_map<int , int > sentiment_value;
+// void wordsvocab(){
+//     sentiment_value[1] = 0;
+//     sentiment_value[2] = 1;
+//     sentiment_value[3] = 0;
+//     sentiment_value[4] = 0;
+//     sentiment_value[5] = -1;
+//     sentiment_value[6] = 0;
+
+// }
+// int id_to_value(int num){
+//     auto it = sentiment_value.find(num);
+//     if(it != sentiment_value.end()){
+//         return it->second;
+//     }
+//     else {
+//         return 0;
+//     }
+// }
+
 int word_to_id(const std::string &word ){
     auto it = word2id.find(word);
     if(it != word2id.end()){
@@ -110,7 +130,7 @@ void bagofwords(const std::vector<int> numseq){
 
     for(int i : numseq ){
         if(word_sentiment.find(i) != word_sentiment.end()){
-            sentiment += bow[i] * word_sentiment[i];
+            sentiment += bow[i-1] * word_sentiment[i];
         }
     }
     
@@ -135,18 +155,125 @@ void model(const std::vector<std::string> words, const std::vector<int>numseq){
     
     
 }
+std::vector<std::pair<std::string , int >> training_data(){
+    std::vector<std::pair<std::string , int>> data{
+        {"I love nepal ", 1},
+        {"I hate cpp", -1},
+        {"I live in nepal", 0},
+        {"I love my country", 1},
+        {"cpp is good", 1},
+        {"cpp is a programming language ", 0},
+        {"I hate eating vegetables", -1},
+        {"cpp is sometimes boring", -1},
+        {"I like you", 1},
+        {"I dislike you", -1},
+        {"I am not interested in talking", -1}
+
+    };
+    return data;
+}
+std::unordered_map<std::string , int > postive_count;
+std::unordered_map<std::string , int > negative_count;
+std::unordered_map<std::string , int > neutral_count;
+
+// std::string tokenizer(std::string words){
+//     std::istringstream iss (words);
+//     std::string temp;
+//     while(iss >> temp){
+//         for(char &c : temp ){c = tolower(c);}
+//         return temp;
+//     }
+// }
+
+void trainer(std::vector<std::pair<std::string , int >> training_set){
+    
+    for(auto &data : training_set){
+        
+        if(data.second == 1){
+            
+            std::istringstream iss (data.first);
+            std::string temp;
+            
+            while(iss >> temp){
+                for(char &c : temp){
+                c = tolower(c);
+                }
+                postive_count[temp]++;
+            }
+                        
+        }
+        else if( data.second == -1){
+            std::istringstream iss (data.first);
+            std::string temp;
+            while(iss >> temp){
+                for(char &c : temp){
+                c = tolower(c);
+                }
+                negative_count[temp]++;
+            }
+        }
+        else {
+            std::istringstream iss (data.first);
+            std::string temp;
+            while(iss >> temp){
+                for(char &c : temp){
+                c = tolower(c);
+                }
+                neutral_count[temp]++;
+            }
+        }
+    }
+    
+}
+std::string sentiment_predictor(std::vector<std::string>words){
+    int pos_score = 0 , neg_score = 0 , neu_score = 0;
+    for(auto &word : words){
+        if(postive_count.find(word) != postive_count.end()){
+            pos_score += postive_count[word];
+        }
+        if(negative_count.find(word) != negative_count.end()){
+            neg_score += negative_count[word];
+        }
+        if(neutral_count.find(word) != neutral_count.end()){
+            neu_score += neutral_count[word];
+        }
+    }
+    if(pos_score > neg_score && pos_score > neu_score ) return "Postive";
+    else if(neg_score > pos_score && neg_score > neu_score) return "Negative";
+    else return "Neutral";
 
 
+}
 
 int  main(){
-    std::string input;
-    std::cout<<":";
-    std::getline(std::cin , input);
-    vocabulary();
-    std::vector<std::string> words= tokenize(input);
-    std::vector<int> numseq = words_to_num(words);
+    // std::string input;
+    // std::cout<<":";
+    // std::getline(std::cin , input);
+    // vocabulary();
+    // std::vector<std::string> words= tokenize(input);
+    // std::vector<int> numseq = words_to_num(words);
 
-    model(words, numseq);
+    // model(words, numseq);
+
+    // Training data
+    std::vector<std::pair<std::string , int >> training_set = training_data();
+    trainer(training_set);
+
+    // Asking user to input 
+    std::string input ;
+    std::cout<<"Enter the sentence";
+    std::getline(std::cin , input);
+    std::vector<std::string> words = tokenize(input);
+    std::string Sentiment = sentiment_predictor(words);
+    std::cout<<std::endl;
+    std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
+    
+
+
+
+       
+    
+    
 
 
     
