@@ -167,7 +167,8 @@ std::vector<std::pair<std::string , int >> training_data(){
         {"cpp is sometimes boring", -1},
         {"I like you", 1},
         {"I dislike you", -1},
-        {"I am not interested in talking", -1}
+        {"I am not interested in talking", -1},
+        {" I like nepal", 1}
 
     };
     return data;
@@ -238,7 +239,7 @@ std::string sentiment_predictor(std::vector<std::string>words){
             neu_score += neutral_count[word];
         }
     }
-    if(pos_score > neg_score && pos_score > neu_score ) return "Postive";
+    if(pos_score > neg_score && pos_score > neu_score ) return "Positive";
     else if(neg_score > pos_score && neg_score > neu_score) return "Negative";
     else return "Neutral";
 
@@ -259,17 +260,20 @@ int  main(){
     std::vector<std::pair<std::string , int >> training_set = training_data();
     trainer(training_set);
 
+    
     // Asking user to input 
     std::string input ;
-    std::cout<<"Enter the sentence";
-    std::getline(std::cin , input);
-    std::vector<std::string> words = tokenize(input);
-    std::string Sentiment = sentiment_predictor(words);
-    std::cout<<std::endl;
-    std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
+    while(true){
+        std::cout<<"Enter the sentence(type exit to quit) : ";
+        std::getline(std::cin , input);
+        if(input == "exit") exit(0);
+        std::vector<std::string> words = tokenize(input);
+        std::string Sentiment = sentiment_predictor(words);
+        std::cout<<std::endl;
+        std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
     
 
-
+    }
 
        
     
