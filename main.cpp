@@ -5,6 +5,7 @@
 #include<algorithm>
 #include<map>
 #include<unordered_map>
+#include "naivebayes.h"
 std::vector <std::string> words;
 std::vector<int> numseq;
 std::unordered_map<std::string , int > word2id;
@@ -145,8 +146,6 @@ void bagofwords(const std::vector<int> numseq){
     }
 }
 
-
-
 void model(const std::vector<std::string> words, const std::vector<int>numseq){
     wordcount(words);
     display(numseq);
@@ -155,24 +154,24 @@ void model(const std::vector<std::string> words, const std::vector<int>numseq){
     
     
 }
-std::vector<std::pair<std::string , int >> training_data(){
-    std::vector<std::pair<std::string , int>> data{
-        {"I love nepal ", 1},
-        {"I hate cpp", -1},
-        {"I live in nepal", 0},
-        {"I love my country", 1},
-        {"cpp is good", 1},
-        {"cpp is a programming language ", 0},
-        {"I hate eating vegetables", -1},
-        {"cpp is sometimes boring", -1},
-        {"I like you", 1},
-        {"I dislike you", -1},
-        {"I am not interested in talking", -1},
-        {" I like nepal", 1}
+// std::vector<std::pair<std::string , int >> training_data(){
+//     std::vector<std::pair<std::string , int>> data{
+//         {"I love nepal ", 1},
+//         {"I hate cpp", -1},
+//         {"I live in nepal", 0},
+//         {"I love my country", 1},
+//         {"cpp is good", 1},
+//         {"cpp is a programming language ", 0},
+//         {"I hate eating vegetables", -1},
+//         {"cpp is sometimes boring", -1},
+//         {"I like you", 1},
+//         {"I dislike you", -1},
+//         {"I am not interested in talking", -1},
+//         {" I like nepal", 1}
 
-    };
-    return data;
-}
+//     };
+//     return data;
+// }
 std::unordered_map<std::string , int > postive_count;
 std::unordered_map<std::string , int > negative_count;
 std::unordered_map<std::string , int > neutral_count;
@@ -186,46 +185,46 @@ std::unordered_map<std::string , int > neutral_count;
 //     }
 // }
 
-void trainer(std::vector<std::pair<std::string , int >> training_set){
+// void trainer(std::vector<std::pair<std::string , int >> training_set){
     
-    for(auto &data : training_set){
+//     for(auto &data : training_set){
         
-        if(data.second == 1){
+//         if(data.second == 1){
             
-            std::istringstream iss (data.first);
-            std::string temp;
+//             std::istringstream iss (data.first);
+//             std::string temp;
             
-            while(iss >> temp){
-                for(char &c : temp){
-                c = tolower(c);
-                }
-                postive_count[temp]++;
-            }
+//             while(iss >> temp){
+//                 for(char &c : temp){
+//                 c = tolower(c);
+//                 }
+//                 postive_count[temp]++;
+//             }
                         
-        }
-        else if( data.second == -1){
-            std::istringstream iss (data.first);
-            std::string temp;
-            while(iss >> temp){
-                for(char &c : temp){
-                c = tolower(c);
-                }
-                negative_count[temp]++;
-            }
-        }
-        else {
-            std::istringstream iss (data.first);
-            std::string temp;
-            while(iss >> temp){
-                for(char &c : temp){
-                c = tolower(c);
-                }
-                neutral_count[temp]++;
-            }
-        }
-    }
+//         }
+//         else if( data.second == -1){
+//             std::istringstream iss (data.first);
+//             std::string temp;
+//             while(iss >> temp){
+//                 for(char &c : temp){
+//                 c = tolower(c);
+//                 }
+//                 negative_count[temp]++;
+//             }
+//         }
+//         else {
+//             std::istringstream iss (data.first);
+//             std::string temp;
+//             while(iss >> temp){
+//                 for(char &c : temp){
+//                 c = tolower(c);
+//                 }
+//                 neutral_count[temp]++;
+//             }
+//         }
+//     }
     
-}
+// }
 std::string sentiment_predictor(std::vector<std::string>words){
     int pos_score = 0 , neg_score = 0 , neu_score = 0;
     for(auto &word : words){
@@ -257,26 +256,29 @@ int  main(){
     // model(words, numseq);
 
     // Training data
-    std::vector<std::pair<std::string , int >> training_set = training_data();
-    trainer(training_set);
+    // std::vector<std::pair<std::string , int >> training_set = training_data();
+    // trainer(training_set);
 
     
     // Asking user to input 
-    std::string input ;
-    while(true){
-        std::cout<<"Enter the sentence(type exit to quit) : ";
-        std::getline(std::cin , input);
-        if(input == "exit") exit(0);
-        std::vector<std::string> words = tokenize(input);
-        std::string Sentiment = sentiment_predictor(words);
-        std::cout<<std::endl;
-        std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
+    // std::string input ;
+    // while(true){
+    //     std::cout<<"Enter the sentence(type exit to quit) : ";
+    //     std::getline(std::cin , input);
+    //     if(input == "exit") exit(0);
+    //     std::vector<std::string> words = tokenize(input);
+    //     std::string Sentiment = sentiment_predictor(words);
+    //     std::cout<<std::endl;
+    //     std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
     
 
-    }
+    // }
 
-       
+    // Calling for naive bayes
+    NaiveBayes nb;
+    nb.Bayescall();
     
+    return 0;
     
 
 
