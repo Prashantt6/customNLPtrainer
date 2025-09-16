@@ -93,9 +93,9 @@ std::string NaiveBayes::predictor(std::string& input){
     std::vector<std::string>words =preprocessing(input);
     double posScore =0 , negScore = 0 , neuScore = 0;
     for (auto &word : words){
-        double wordPosProb = (positiveWordCount[word]+1)/(totalPositiveWords + positiveWordCount.size());
-        double wordNegProb = (negativeWordCount[word]+1 )/ (totalNegativeWords + negativeWordCount.size());
-        double wordNeuProb = (neutralWordCount[word]+1)/ (totalNeutralWords + neutralWordCount.size ());
+        double wordPosProb = (positiveWordCount[word]+1.0)/(totalPositiveWords + positiveWordCount.size());
+        double wordNegProb = (negativeWordCount[word]+1.0 )/ (totalNegativeWords + negativeWordCount.size());
+        double wordNeuProb = (neutralWordCount[word]+1.0)/ (totalNeutralWords + neutralWordCount.size ());
 
         posScore += log(wordPosProb);
         negScore += log(wordNegProb);
@@ -103,9 +103,9 @@ std::string NaiveBayes::predictor(std::string& input){
 
     }
     double totalWords = totalPositiveWords + totalNegativeWords + totalNeutralWords;
-    posScore += log(totalPositiveWords/totalWords);
-    negScore += log(totalNegativeWords/ totalWords);
-    neuScore += log(totalNeutralWords/ totalWords);
+    posScore += log(((double)totalPositiveWords + 1.0 )/(totalWords + 3.0));
+    negScore += log(((double)totalNegativeWords + 1.0) / (totalWords + 3.0));
+    neuScore += log(((double)totalNeutralWords + 1.0) /( totalWords + 3.0));
 
 
     if(posScore> negScore && posScore > neuScore){
@@ -123,10 +123,12 @@ void NaiveBayes:: Bayescall(){
     std::vector<std::pair<std::string , int >> training_set = training_data();
     this-> trainer(training_set);
     std::string input;
-    std::cout<<"Enter the sentence : ";
+    while(true){
+    std::cout<<"Enter the sentence(type exit to quit ) : ";
     std::getline(std::cin , input);
+    if(input == "exit") exit(0);
     std::string Prediction = predictor(input);
     std::cout<<std::endl;
-    std::cout<<"Sentiment of : "<< input << " is " <<" '"<< Prediction << "'";
-
+    std::cout<<"Sentiment of : "<< input << " is " <<" '"<< Prediction << "'"<<std::endl;
+    }
  }
