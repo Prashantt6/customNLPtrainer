@@ -9,7 +9,7 @@ private:
     std::unordered_map<std::string, int> neutralWordCount;
     
     
-
+    
 
     int totalPositiveWords = 0;
     int totalNegativeWords = 0;
@@ -23,4 +23,5 @@ public:
     void trainer(std::vector<std::pair<std::string, int>>& trainingData);
     std::string predictor( std::string& sentence);
     void Bayescall();
+    void probability_calculator();
 };
