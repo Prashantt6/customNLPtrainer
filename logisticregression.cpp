@@ -10,6 +10,7 @@
 
 
 
+
 std::vector<std::pair<std::string , int >>LogisticReg:: training_data(){
     std::vector<std::pair<std::string , int>> data{
         {"I love nepal ", 1},
@@ -67,12 +68,12 @@ void LogisticReg::logistic_reg(){
             vocabulary.insert(word);
         }
     }
-
+    std::vector<std::string>vocablist(vocabulary.begin(), vocabulary.end());
 
     for(auto &data : training_set){
 
         std::vector<std::string> words = preprocessing(data.first);
-        std::vector<std::string>vocablist(vocabulary.begin(), vocabulary.end());
+        
         std::vector<int> temp_vec(vocablist.size(), 0);
         for(auto &word : words){
             auto it = std::find(vocablist.begin() , vocablist.end (), word);
@@ -81,8 +82,32 @@ void LogisticReg::logistic_reg(){
                 temp_vec[index] = 1;
             }
         }
-        wordsvec["set" + std::to_string(set_num)] = temp_vec;
+        int label = data.second; 
+        wordsvec["set" + std::to_string(set_num)] = std::make_pair(temp_vec, label);
         set_num++;
 
-        
+    }
+}
+void LogisticReg :: model_trainer(){
+    std::vector<double> weights(vocabulary.size(), 0.0);
+    double b = 0.1;
+    double lr = 0.01;
+    
+    for(int epoch = 0 ; epoch < 10000 ; epoch++){
+        for(auto &sentence : wordsvec){
+            std::vector<int> temp = sentence.second.first;
+            double wx = 0;
+            int label = sentence.second.second;
+
+            for(int i = 0 ; i < weights.size() ; i ++){
+
+                    wx += weights[i] * temp[i];
+                
+            }
+            double z = wx + b;
+            double y = 1/(1+std::exp(-z));
+            for (int i = 0; i < weights.size(); i++) weights[i] += lr * (label - y) * temp[i];
+            b += lr * (label - y);
+        }
+    }
 }
