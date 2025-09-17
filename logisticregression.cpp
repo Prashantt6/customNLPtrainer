@@ -58,15 +58,31 @@ std::vector<std::string>LogisticReg:: preprocessing(const std::string& sentence)
 
 void LogisticReg::logistic_reg(){
     std::vector<std::pair<std::string , int>> training_set = training_data();
-    
-    for(auto &data : training_set){
+    std::vector<std::string > BOW_vec;
+    int set_num= 1;
+
+     for(auto &data : training_set){
         std::vector<std::string> words = preprocessing(data.first);
         for(auto &word : words){
-             vocabulary.insert(word);
+            vocabulary.insert(word);
         }
     }
-    for(auto &word : vocabulary){
-        std::cout<<word<< " ";
-    }
 
+
+    for(auto &data : training_set){
+
+        std::vector<std::string> words = preprocessing(data.first);
+        std::vector<std::string>vocablist(vocabulary.begin(), vocabulary.end());
+        std::vector<int> temp_vec(vocablist.size(), 0);
+        for(auto &word : words){
+            auto it = std::find(vocablist.begin() , vocablist.end (), word);
+            if(it != vocablist.end()){
+                int index = it - vocablist.begin();
+                temp_vec[index] = 1;
+            }
+        }
+        wordsvec["set" + std::to_string(set_num)] = temp_vec;
+        set_num++;
+
+        
 }

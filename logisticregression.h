@@ -9,6 +9,7 @@ class LogisticReg {
          std::vector<std::string>preprocessing(const std::string &sentence);
          std::set<std::string> vocabulary;
          std::unordered_map<std::string , std::vector<int>> wordsvec;
+         std::vector<std::string>vocablist;
     public :
         void logistic_reg();
 
