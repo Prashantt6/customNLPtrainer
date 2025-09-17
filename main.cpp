@@ -6,6 +6,7 @@
 #include<map>
 #include<unordered_map>
 #include "naivebayes.h"
+#include "logisticregression.h"
 std::vector <std::string> words;
 std::vector<int> numseq;
 std::unordered_map<std::string , int > word2id;
