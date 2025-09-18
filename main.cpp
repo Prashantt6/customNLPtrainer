@@ -276,8 +276,12 @@ int  main(){
     // }
 
     // Calling for naive bayes
-    NaiveBayes nb;
-    nb.Bayescall();
+    // NaiveBayes nb;
+    // nb.Bayescall();
+
+    // Calling for logistic regression prediction
+    LogisticReg l ;
+    l.call_logisticreg();
     
     return 0;
     
