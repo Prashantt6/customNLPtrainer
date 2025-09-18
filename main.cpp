@@ -280,8 +280,8 @@ int  main(){
     // nb.Bayescall();
 
     // Calling for logistic regression prediction
-    LogisticReg l ;
-    l.call_logisticreg();
+    LogisticReg lr ;
+    lr.call_logisticreg();
     
     return 0;
     

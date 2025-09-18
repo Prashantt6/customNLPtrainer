@@ -1,3 +1,6 @@
+#ifndef LOGISTICREGRESSION_H
+#define LOGISTICREGRESSION_H
+
 #include <string>
 #include <vector>
 #include <set>
@@ -14,7 +17,7 @@ private:
     std::vector<double> weights;
 
     const std::unordered_set<std::string> stopwords = {
-        "is", "to", "a", "be", "am", "i", "are", "my", "in"
+        "is", "to", "a", "be", "am", "i", "are", "my", "in", "the", "and", "or"
     };
 
     std::vector<std::pair<std::string, int>> training_data();
@@ -27,3 +30,5 @@ public:
     void call_logisticreg();
     std::string predictor(const std::string& input);
 };
+
+#endif 
