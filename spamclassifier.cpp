@@ -52,17 +52,34 @@ void SpamClassifier :: BOW(){
         std::vector<std::string> words = preprocessing(data.first);
         if(data.second == 1) {
            for(auto& word : words ){
-                positiveWordCount[word]++;
-                totalPositiveWords++;
+                spamWordCount[word]++;
+                totalspamWords++;
            }
         }
         else {
             for(auto& word : words){
-                negativeWordCount[word]++;
-                totalNegativeWords++;
+                notspamWordCount[word]++;
+                totalspamWords++;
             }
         }
     }
     
     
+}
+std::string SpamClassifier :: predictor(const std::string &input){
+    std::vector<std::string> words  = preprocessing(input);
+    double spamscore = 0 , notspamscore = 0;
+    for(auto& word : words){
+        double spamProb =  (spamWordCount[word] + 1.0 )/(totalspamWords + spamWordCount.size());
+        double notspamProb = (notspamWordCount[word] + 1.0) / (totalnotspamWords + notspamWordCount.size());
+
+        spamscore += log(spamProb);
+        notspamscore += log(notspamProb);
+    }
+    double totalwords = totalnotspamWords + totalspamWords;
+    spamscore += log(((double)totalspamWords + 1.0 ) / ((double)totalwords + 3.0));
+    notspamscore += log(((double)totalnotspamWords + 1.0) / ((double)totalwords + 3.0));
+
+    if(spamscore > notspamscore ) return "spam";
+    else return "notspam";
 }
