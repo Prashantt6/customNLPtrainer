@@ -8,7 +8,7 @@
 #include <cmath>
 #include <unordered_set>
 #include <iterator>
-
+    
 std::vector<std::pair<std::string, int>> LogisticReg::training_data() {
     std::vector<std::pair<std::string, int>> data{
         {"I love nepal", 1},
