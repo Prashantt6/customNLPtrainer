@@ -44,3 +44,25 @@ std::vector<std::string> SpamClassifier :: preprocessing(const std::string& sent
     }
     return result;
 }
+void SpamClassifier :: BOW(){
+    std::vector<std::pair<std::string, int>> training_set = training_data();
+
+    for(auto &data : training_set)
+    {
+        std::vector<std::string> words = preprocessing(data.first);
+        if(data.second == 1) {
+           for(auto& word : words ){
+                positiveWordCount[word]++;
+                totalPositiveWords++;
+           }
+        }
+        else {
+            for(auto& word : words){
+                negativeWordCount[word]++;
+                totalNegativeWords++;
+            }
+        }
+    }
+    
+    
+}
