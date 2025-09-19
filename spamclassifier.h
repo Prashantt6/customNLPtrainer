@@ -20,6 +20,8 @@ class SpamClassifier{
     
     int totalspamWords = 0;
     int totalnotspamWords = 0;
+    int spamdocs = 0;
+    int notspamdocs = 0;
 
 
     public:

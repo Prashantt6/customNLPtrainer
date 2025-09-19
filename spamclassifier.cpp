@@ -51,12 +51,14 @@ void SpamClassifier :: BOW(){
     {
         std::vector<std::string> words = preprocessing(data.first);
         if(data.second == 1) {
+            spamdocs ++;
            for(auto& word : words ){
                 spamWordCount[word]++;
                 totalspamWords++;
            }
         }
         else {
+            notspamdocs++;
             for(auto& word : words){
                 notspamWordCount[word]++;
                 totalnotspamWords++;
@@ -66,23 +68,27 @@ void SpamClassifier :: BOW(){
     
     
 }
-std::string SpamClassifier :: predictor(const std::string &input){
-    std::vector<std::string> words  = preprocessing(input);
-    double spamscore = 0 , notspamscore = 0;
-    for(auto& word : words){
-        double spamProb =  (spamWordCount[word] + 1.0 )/(totalspamWords + spamWordCount.size());
+std::string SpamClassifier::predictor(const std::string &input) {
+    std::vector<std::string> words = preprocessing(input);
+    double spamscore = 0, notspamscore = 0;
+
+    for (auto &word : words) {
+        double spamProb = (spamWordCount[word] + 1.0) / (totalspamWords + spamWordCount.size());
         double notspamProb = (notspamWordCount[word] + 1.0) / (totalnotspamWords + notspamWordCount.size());
 
         spamscore += log(spamProb);
         notspamscore += log(notspamProb);
     }
-    int totalwords = totalnotspamWords + totalspamWords;
-    spamscore += log(((double)totalspamWords  ) / ((double)totalwords));
-    notspamscore += log(((double)totalnotspamWords ) / ((double)totalwords ));
 
-    if(spamscore > notspamscore ) return "spam";
-    else return "notspam";
+
+    int totalDocs = spamdocs + notspamdocs;
+    spamscore += log(((double)spamdocs) / totalDocs);
+    notspamscore += log(((double)notspamdocs) / totalDocs);
+
+    if (spamscore > notspamscore) return "spam";
+    else return "not spam";
 }
+
 
 void SpamClassifier :: Classifier_call(){
     BOW();

@@ -68,7 +68,7 @@ void NaiveBayes:: trainer(std::vector<std::pair< std::string , int >> &training_
            }
 
         }
-        else if(data.second == -1){
+        else if(data.second     == -1){
            for(auto &word : words){
             negativeWordCount[word]++;
             totalNegativeWords++;
