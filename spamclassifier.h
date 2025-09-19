@@ -25,5 +25,6 @@ class SpamClassifier{
     public:
         void BOW();
         std::string predictor(const std::string &input);
+        void Classifier_call();
 
 };

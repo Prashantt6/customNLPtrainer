@@ -7,6 +7,10 @@
 #include<unordered_map>
 #include "naivebayes.h"
 #include "logisticregression.h"
+#include "spamclassifier.h"
+
+
+
 std::vector <std::string> words;
 std::vector<int> numseq;
 std::unordered_map<std::string , int > word2id;
@@ -280,12 +284,15 @@ int  main(){
     // nb.Bayescall();
 
     // Calling for logistic regression prediction
-    LogisticReg lr ;
-    lr.call_logisticreg();
+    // LogisticReg lr ;
+    // lr.call_logisticreg();
     
+   
+    
+
+    //  Calling spam classifier 
+    SpamClassifier sc;
+    sc.Classifier_call();
     return 0;
-    
-
-
     
 }

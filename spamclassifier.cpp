@@ -59,7 +59,7 @@ void SpamClassifier :: BOW(){
         else {
             for(auto& word : words){
                 notspamWordCount[word]++;
-                totalspamWords++;
+                totalnotspamWords++;
             }
         }
     }
@@ -76,10 +76,23 @@ std::string SpamClassifier :: predictor(const std::string &input){
         spamscore += log(spamProb);
         notspamscore += log(notspamProb);
     }
-    double totalwords = totalnotspamWords + totalspamWords;
-    spamscore += log(((double)totalspamWords + 1.0 ) / ((double)totalwords + 3.0));
-    notspamscore += log(((double)totalnotspamWords + 1.0) / ((double)totalwords + 3.0));
+    int totalwords = totalnotspamWords + totalspamWords;
+    spamscore += log(((double)totalspamWords  ) / ((double)totalwords));
+    notspamscore += log(((double)totalnotspamWords ) / ((double)totalwords ));
 
     if(spamscore > notspamscore ) return "spam";
     else return "notspam";
+}
+
+void SpamClassifier :: Classifier_call(){
+    BOW();
+    std::string input;
+    
+    while(true){
+        std::cout<<"Enter the sentence (type exit to quit) :  ";
+        std::getline(std::cin , input);
+        if(input == "exit") exit(0);
+        std::string Prediction = predictor(input);
+        std::cout<<"The sentence is :" << Prediction<< std::endl;
+    }
 }
