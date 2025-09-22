@@ -1,0 +1,6 @@
+I love natural language processing
+Word embeddings capture semantic meaning
+The quick brown fox jumps over the lazy dog
+Machine learning is fun and powerful
+I enjoy coding in C++
+Neural networks can understand language
