@@ -9,14 +9,14 @@
 #include "logisticregression.h"
 #include "spamclassifier.h"
 
+// Global vectors and maps for word embeddings / mapping
+std::vector <std::string> words;                   // Stores tokenized words
+std::vector<int> numseq;                           // Stores numerical representation of words
+std::unordered_map<std::string , int > word2id;    // Maps words to unique IDs
+std::unordered_map<int , std::string> id2word;     // Maps IDs back to words
 
-
-std::vector <std::string> words;
-std::vector<int> numseq;
-std::unordered_map<std::string , int > word2id;
-std::unordered_map<int , std::string> id2word;
+// Initialize vocabulary with predefined words and assign IDs
 void vocabulary(){
-    
     word2id["i"] = 1;
     word2id["love"] = 2;
     word2id["nepal"] = 3;
@@ -24,31 +24,13 @@ void vocabulary(){
     word2id["hate"] = 5;
     word2id["cpp"] = 6;
 
+    // Build reverse mapping for convenience
     for(const auto& pair : word2id){
         id2word[pair.second] = pair.first;
     }
-
 }
-// std::unordered_map<int , int > sentiment_value;
-// void wordsvocab(){
-//     sentiment_value[1] = 0;
-//     sentiment_value[2] = 1;
-//     sentiment_value[3] = 0;
-//     sentiment_value[4] = 0;
-//     sentiment_value[5] = -1;
-//     sentiment_value[6] = 0;
 
-// }
-// int id_to_value(int num){
-//     auto it = sentiment_value.find(num);
-//     if(it != sentiment_value.end()){
-//         return it->second;
-//     }
-//     else {
-//         return 0;
-//     }
-// }
-
+// Converts a word to its ID, returns -1 if word not found
 int word_to_id(const std::string &word ){
     auto it = word2id.find(word);
     if(it != word2id.end()){
@@ -59,42 +41,43 @@ int word_to_id(const std::string &word ){
     }
 }
 
+// Converts ID back to word, returns "UNK" if ID not found
 std::string id_to_word(int num){
     auto it = id2word.find(num);
     if(it != id2word.end()){
         return it->second;
-
     }
     else {
         return "UNK";
     }
 }
+
+// Tokenizes a sentence into lowercase words
 std::vector<std::string> tokenize(const std::string &input){
     std::vector<std::string> words;
-    
     std::istringstream iss(input);
     std::string temp;
     
     while(iss >> temp){
         for(char &c : temp ){
-        c = tolower(c);
+            c = tolower(c);       // Convert each character to lowercase
         }
         words.push_back(temp);
     }
     return words;
-
 }
 
+// Converts tokenized words to their numeric IDs
 std::vector<int> words_to_num(const std::vector<std::string> &words){
     std::vector<int> numseq;
     for(const auto& word : words){
-        int num = word_to_id(word);
+        int num = word_to_id(word);   // Get ID for each word
         numseq.push_back(num);
     }
-   
     return numseq;
-    
 }
+
+// Displays words from their numeric representation
 void display(const std::vector<int> &numseq){
     for(int i : numseq){
         std::string word = id_to_word(i);
@@ -102,29 +85,37 @@ void display(const std::vector<int> &numseq){
     }
     std::cout<<std::endl;
 }
-void wordcount(const std::vector<std::string>words){
+
+// Prints the total word count of a sentence
+void wordcount(const std::vector<std::string> words){
     std::cout<<"Word_Count :" << words.size()<<std::endl;
 }
 
+// Provides default responses for certain keywords
 void defrespond(const std::vector<int> numseq){
     for(int i : numseq){
-        if(i == 2){
+        if(i == 2){                  // Word "love"
             std::cout<<"love is a beautiful thing"<<std::endl;
         }
-        else if( i ==3 ){
+        else if( i ==3 ){             // Word "nepal"
             std::cout<<"Nepal is a amazing country"<<std::endl;
         }
     }
 }
+
+// Creates a Bag-of-Words representation and calculates simple sentiment
 void bagofwords(const std::vector<int> numseq){
-    
     int vocab = 6;
-    std::vector<int>bow(vocab , 0);
+    std::vector<int> bow(vocab , 0);
+
+    // Count occurrences of each word
     for(int i : numseq){
         if(i>0){
             bow[i-1]++;
         }
     }
+
+    // Predefined sentiment values for words
     int sentiment = 0;
     std::unordered_map<int , int> word_sentiment;
     word_sentiment[1] = 0;
@@ -134,12 +125,14 @@ void bagofwords(const std::vector<int> numseq){
     word_sentiment[5] = -1;
     word_sentiment[6] = 0;
 
+    // Multiply word count by sentiment and sum up
     for(int i : numseq ){
         if(word_sentiment.find(i) != word_sentiment.end()){
             sentiment += bow[i-1] * word_sentiment[i];
         }
     }
-    
+
+    // Output overall sentiment
     if(sentiment >0){
         std::cout<<"Positive statement"<<std::endl;
     }
@@ -151,87 +144,24 @@ void bagofwords(const std::vector<int> numseq){
     }
 }
 
+// Runs all word-based operations: count, display, default response, Bag-of-Words
 void model(const std::vector<std::string> words, const std::vector<int>numseq){
-    wordcount(words);
-    display(numseq);
-    defrespond(numseq);
-    bagofwords(numseq);
-    
-    
+    wordcount(words);          // Print word count
+    display(numseq);           // Display words
+    defrespond(numseq);        // Default responses
+    bagofwords(numseq);        // Sentiment via Bag-of-Words
 }
-// std::vector<std::pair<std::string , int >> training_data(){
-//     std::vector<std::pair<std::string , int>> data{
-//         {"I love nepal ", 1},
-//         {"I hate cpp", -1},
-//         {"I live in nepal", 0},
-//         {"I love my country", 1},
-//         {"cpp is good", 1},
-//         {"cpp is a programming language ", 0},
-//         {"I hate eating vegetables", -1},
-//         {"cpp is sometimes boring", -1},
-//         {"I like you", 1},
-//         {"I dislike you", -1},
-//         {"I am not interested in talking", -1},
-//         {" I like nepal", 1}
 
-//     };
-//     return data;
-// }
+// Global word counts for simple sentiment predictor
 std::unordered_map<std::string , int > postive_count;
 std::unordered_map<std::string , int > negative_count;
 std::unordered_map<std::string , int > neutral_count;
 
-// std::string tokenizer(std::string words){
-//     std::istringstream iss (words);
-//     std::string temp;
-//     while(iss >> temp){
-//         for(char &c : temp ){c = tolower(c);}
-//         return temp;
-//     }
-// }
-
-// void trainer(std::vector<std::pair<std::string , int >> training_set){
-    
-//     for(auto &data : training_set){
-        
-//         if(data.second == 1){
-            
-//             std::istringstream iss (data.first);
-//             std::string temp;
-            
-//             while(iss >> temp){
-//                 for(char &c : temp){
-//                 c = tolower(c);
-//                 }
-//                 postive_count[temp]++;
-//             }
-                        
-//         }
-//         else if( data.second == -1){
-//             std::istringstream iss (data.first);
-//             std::string temp;
-//             while(iss >> temp){
-//                 for(char &c : temp){
-//                 c = tolower(c);
-//                 }
-//                 negative_count[temp]++;
-//             }
-//         }
-//         else {
-//             std::istringstream iss (data.first);
-//             std::string temp;
-//             while(iss >> temp){
-//                 for(char &c : temp){
-//                 c = tolower(c);
-//                 }
-//                 neutral_count[temp]++;
-//             }
-//         }
-//     }
-    
-// }
-std::string sentiment_predictor(std::vector<std::string>words){
+// Predict sentiment based on word counts from training
+std::string sentiment_predictor(std::vector<std::string> words){
     int pos_score = 0 , neg_score = 0 , neu_score = 0;
+
+    // Sum up scores based on trained word counts
     for(auto &word : words){
         if(postive_count.find(word) != postive_count.end()){
             pos_score += postive_count[word];
@@ -243,56 +173,38 @@ std::string sentiment_predictor(std::vector<std::string>words){
             neu_score += neutral_count[word];
         }
     }
+
+    // Return the class with highest score
     if(pos_score > neg_score && pos_score > neu_score ) return "Positive";
     else if(neg_score > pos_score && neg_score > neu_score) return "Negative";
     else return "Neutral";
-
-
 }
 
 int  main(){
+    // -------------------------
+    // Uncomment any section below to run specific models
+    // -------------------------
+
+    // Word-to-number model
     // std::string input;
     // std::cout<<":";
     // std::getline(std::cin , input);
     // vocabulary();
     // std::vector<std::string> words= tokenize(input);
     // std::vector<int> numseq = words_to_num(words);
-
     // model(words, numseq);
 
-    // Training data
-    // std::vector<std::pair<std::string , int >> training_set = training_data();
-    // trainer(training_set);
-
-    
-    // Asking user to input 
-    // std::string input ;
-    // while(true){
-    //     std::cout<<"Enter the sentence(type exit to quit) : ";
-    //     std::getline(std::cin , input);
-    //     if(input == "exit") exit(0);
-    //     std::vector<std::string> words = tokenize(input);
-    //     std::string Sentiment = sentiment_predictor(words);
-    //     std::cout<<std::endl;
-    //     std::cout<<"Input : "<<input<<std::endl<<"Prediction : "<<Sentiment<<std::endl;
-    
-
-    // }
-
-    // Calling for naive bayes
+    // Naive Bayes model
     // NaiveBayes nb;
     // nb.Bayescall();
 
-    // Calling for logistic regression prediction
+    // Logistic Regression model
     // LogisticReg lr ;
     // lr.call_logisticreg();
-    
-   
-    
 
-    //  Calling spam classifier 
+    // Spam classifier model
     SpamClassifier sc;
-    sc.Classifier_call();
+    sc.Classifier_call();    // Start interactive spam detection loop
+
     return 0;
-    
 }
