@@ -58,6 +58,22 @@ std::vector<std::string> word2vec :: preprocessing (const std::string &sentence)
     return result;
 }
 
+void word2vec :: makepair(const std::vector<std::string>& training_set){
+    
+    for(auto& data : training_set){
+        std::vector<std::string> words = preprocessing(data);
+        for( int i = 0 ; i< words.size() ; i++ ){
+            std::string target = words[i];
+            int left = std::max(0 , i - window);
+            int right = std::min((int)words.size() - 1 , i + window);
+            for( int j = left ; j <= right ; j++){
+                if (i == j) continue;
+                training_pairs.push_back({target , words[j]});
+            }
+         }
+    }
+}
+
 void word2vec :: training(){
     std::vector<std::string> training_set = load_training_data("trainingdata.txt");
 
@@ -76,14 +92,19 @@ void word2vec :: training(){
         std::vector<std::string> words = preprocessing(data);
         
         for(auto &word : words ){
-            std::vector<int>temp_vec(vocablist.size() , 0);
-            auto it = std::find(vocablist.begin() , vocablist.end() , word );
-            if( it != vocablist.end()){
-                int index = std::distance(vocablist.begin() , it);
-                temp_vec[index] = 1;
-            }
-            wordsvec[word] = temp_vec;
+            if(wordsvec.find(word) == wordsvec.end()){
+                std::vector<int>temp_vec(vocablist.size() , 0);
+                auto it = std::find(vocablist.begin() , vocablist.end() , word );
+                if( it != vocablist.end()){
+                    int index = std::distance(vocablist.begin() , it);
+                    temp_vec[index] = 1;
+                }
+                wordsvec[word] = temp_vec;
         }
     }
+    }
+    makepair(training_set);
 
 }
+
+

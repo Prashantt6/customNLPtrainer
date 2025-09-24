@@ -27,11 +27,16 @@ class word2vec {
 
         std::vector<std::string> load_training_data(const std::string &training_data);
 
+        int window = 5;
+
+        std::vector<std::pair<std::string , std::string >> training_pairs;
+
 
         std::unordered_map<std::string, std::vector<int>> wordsvec;
 
     public: 
         void training();
+        void makepair(const std::vector<std::string>& training_set);
         
 
 };
