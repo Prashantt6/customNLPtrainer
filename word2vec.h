@@ -29,6 +29,12 @@ class word2vec {
 
         int window = 5;
 
+        int embedding_size = 50;
+
+        
+
+        
+
         std::vector<std::pair<std::string , std::string >> training_pairs;
 
 
@@ -37,6 +43,9 @@ class word2vec {
     public: 
         void training();
         void makepair(const std::vector<std::string>& training_set);
+        void forward_pass(std::string , std::string );
+        void backward_pass();
+        void prediction();
         
 
 };

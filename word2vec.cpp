@@ -9,6 +9,8 @@
 #include <unordered_set>
 #include <iterator>
 #include <fstream>
+#include <random>
+#include <cmath>
 
 // Loading training dataset through trainingdata.txt
 std::vector<std::string>word2vec :: load_training_data(const std::string &trainingdata) {
@@ -107,4 +109,29 @@ void word2vec :: training(){
 
 }
 
+std::vector<std::vector<float>> initialize_matrix( int rows , int columns) {
+    std::vector<std::vector<float>> mat(rows , std::vector<float>(columns));
+    float limit = 1.0 / std::sqrt(columns);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(-limit , limit);
+
+    for(int i = 0 ; i< rows ; i++){
+        for( int j = 0 ;  j < columns ; j++){
+            mat[i][j] = dist(gen);
+        }
+    }
+    return mat;
+}
+
+void word2vec :: prediction(){
+    int V = vocablist.size();
+    int D = 100;
+    auto W1 = initialize_matrix(V , D);
+    auto W2 = initialize_matrix(D , V );
+    
+    
+
+}
 
