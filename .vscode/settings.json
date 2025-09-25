@@ -60,6 +60,8 @@
         "xhash": "cpp",
         "xtree": "cpp",
         "unordered_set": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "fstream": "cpp",
+        "random": "cpp"
     }
 }

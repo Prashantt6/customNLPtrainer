@@ -16,8 +16,7 @@ class word2vec {
             "is", "to", "a", "be", "am", "i", "are", "my", "in", "the", "and", "or"
         };
 
-        // Provides training data: pairs of sentence + label (1=positive, 0=negative)
-        std::vector<std::pair<std::string, int>> training_data();
+        
 
         // Splits a sentence into lowercase words
         std::vector<std::string> tokenizer(const std::string& sentence);

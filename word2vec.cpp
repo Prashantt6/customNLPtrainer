@@ -125,13 +125,61 @@ std::vector<std::vector<float>> initialize_matrix( int rows , int columns) {
     return mat;
 }
 
+int word_id(std::vector<std::string>& vocablist ,std::string& target){
+    for(int i = 0 ; i< vocablist.size() ; i++){
+        if(vocablist[i] == target){
+            return i;
+        }
+        
+    }
+    return -1;
+}
+
+std::vector<float> multiply (const std::vector<float>& h , const std::vector<std::vector<float>>& W2 ){
+    int V = W2[0].size();
+    int D = h.size();
+    std::vector<float> u(V , 0.0);
+    for(int i = 0 ; i< V ; i++){
+        for( int j = 0 ; j< D  ; j++){
+            u[i] +=   h[j] * W2[j][i]; //taking W2 as a flat vector
+        }
+    }
+    return u;
+}
+
+
 void word2vec :: prediction(){
     int V = vocablist.size();
-    int D = 100;
+    int D = 50;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
+    std::vector<float>expo;
+    std::vector<float>prob;
+    float sum = 0;
     
-    
+    // Forward propagation using SKIP_Gram method
+    for(int epoch = 0 ; epoch <1000 ; epoch++){
+        for(auto& word : training_pairs){
+            std::string target = word.first;
+            std::string context = word.second;
+            int wordindex = word_id(vocablist , target);
+            auto h = W1[wordindex];
+            auto u = multiply(h , W2 );
+            expo.clear();
+            for(int i = 0 ; i < V ; i++){
+                float ex = exp(u[i]);
+                expo.push_back(ex);
+                sum += ex;
+            }
+            prob.clear();
+            for(int i = 0 ; i < V ; i++){
+                float p = expo[i]/ sum;
+                prob.push_back(p);
+            }
 
-}
+            
+        }
+    }   
+
+} 
 
