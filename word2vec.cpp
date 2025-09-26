@@ -155,17 +155,19 @@ void word2vec :: prediction(){
     auto W2 = initialize_matrix(D , V );
     std::vector<float>expo;
     std::vector<float>prob;
-    float sum = 0;
     
-    // Forward propagation using SKIP_Gram method
+    
+    // Forward propagation using SKIP_Gram method   
     for(int epoch = 0 ; epoch <1000 ; epoch++){
         for(auto& word : training_pairs){
+            float total_loss = 0.0;
             std::string target = word.first;
             std::string context = word.second;
             int wordindex = word_id(vocablist , target);
             auto h = W1[wordindex];
             auto u = multiply(h , W2 );
             expo.clear();
+            float sum = 0;
             for(int i = 0 ; i < V ; i++){
                 float ex = exp(u[i]);
                 expo.push_back(ex);
@@ -176,6 +178,15 @@ void word2vec :: prediction(){
                 float p = expo[i]/ sum;
                 prob.push_back(p);
             }
+
+            // Calculating loss 
+            int context_index = word_id(vocablist , context);
+            float P = expo[context_index] /sum;
+            float loss = -log(P);
+            total_loss += loss ;
+            
+            // Loss for each epoch
+            std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;
 
             
         }
