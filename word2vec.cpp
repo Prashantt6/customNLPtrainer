@@ -147,7 +147,7 @@ std::vector<float> multiply (const std::vector<float>& h , const std::vector<std
     return u;
 }
 
-void word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2){
+std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2){
 
         for(int epoch = 0 ; epoch <1000 ; epoch++){
             for(auto& word : training_pairs){
@@ -183,6 +183,9 @@ void word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W
             // Loss for each epoch
             std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;  
         } 
+
+        return W1;
+        
 
     
 }
@@ -223,19 +226,47 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
     }
 
 
+
 }
 
 
-void word2vec :: prediction(){
+void word2vec :: prediction(std::string& word){
     int V = vocablist.size();
     int D = 50;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
     
     // Forward propagation using SKIP_Gram method   
-    forward_pass(V , D , W1 , W2);
+   std::vector<std::vector<float>> Word2vec =  forward_pass(V , D , W1 , W2);
 
-      
+    for(int j = 0 ; j <Word2vec.size() ; j++){
+        wordsvec[vocablist[j]] = Word2vec[j];
+    }
+    for(auto data : wordsvec){
+        if(word == data.first){
+            std::vector<float> vec = data.second;
+            std::cout<<" The vector representation of " << word <<" is : "<<std::endl;
+            for(auto& num : vec){
+                std::cout<<num ;
+
+            }
+        }
+    }
 
 } 
+
+
+void word2vec :: word2vec_call(){
+    training();
+    std::string input;
+    while (true) {
+        std::cout << "Enter a word (type 'exit' to quit): ";
+        std::getline(std::cin, input);
+        if (input == "exit") break;
+
+        prediction(input);
+        
+    }
+
+}
 

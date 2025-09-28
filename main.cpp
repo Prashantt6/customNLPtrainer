@@ -8,6 +8,7 @@
 #include "naivebayes.h"
 #include "logisticregression.h"
 #include "spamclassifier.h"
+#include "word2vec.h"
 
 // Global vectors and maps for word embeddings / mapping
 std::vector <std::string> words;                   // Stores tokenized words
@@ -203,8 +204,13 @@ int  main(){
     // lr.call_logisticreg();
 
     // Spam classifier model
-    SpamClassifier sc;
-    sc.Classifier_call();    // Start interactive spam detection loop
+    // SpamClassifier sc;
+    // sc.Classifier_call();    // Start interactive spam detection loop
 
+
+    // Word to vector 
+
+    word2vec wv;
+    wv.word2vec_call();
     return 0;
 }
