@@ -95,7 +95,7 @@ void word2vec :: training(){
         
         for(auto &word : words ){
             if(wordsvec.find(word) == wordsvec.end()){
-                std::vector<int>temp_vec(vocablist.size() , 0);
+                std::vector<float>temp_vec(vocablist.size() , 0);
                 auto it = std::find(vocablist.begin() , vocablist.end() , word );
                 if( it != vocablist.end()){
                     int index = std::distance(vocablist.begin() , it);
@@ -151,7 +151,7 @@ void word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W
 
         for(int epoch = 0 ; epoch <1000 ; epoch++){
             for(auto& word : training_pairs){
-                float total_loss = 0.0;
+                
                 std::string target = word.first;
                 std::string context = word.second;
                 int wordindex = word_id(vocablist , target);
@@ -175,14 +175,54 @@ void word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W
                 float loss = -log(prob[context_index]);
                 total_loss += loss ;
                 
-                // Loss for each epoch
-                std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;    
+                // Backward pass 
+                backward_pass(h , W1 , W2 , target , context);
                 
                 
             }
+            // Loss for each epoch
+            std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;  
         } 
 
     
+}
+
+void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2, std::string& target , std::string& context){
+    std::vector<float>error(prob.size() , 0.0   ) ;
+    std::vector<float> tempvec = wordsvec[context];
+    for(int i = 0 ; i < prob.size() ; i++){
+        error[i] = prob[i] - tempvec[i];
+    }
+    int D = h.size();
+    int V = prob.size();
+
+    // Gradient for W2
+    std::vector<std::vector<float>>del_W2(D , std::vector<float>(V , 0.0));
+    for( int i = 0 ; i < D ; i++){
+        for(int j = 0 ; j < V ; j++){
+            del_W2[i][j] = h[i] * error[j];
+            W2[i][j] -= lr * del_W2[i][j];
+        }
+    }
+
+    // Gradient for W1
+    std::vector<float>del_h(D , 0.0);
+
+    for(int i = 0 ; i< D ; i++){
+        for(int j = 0 ; j< V ; j++){
+            del_h[i] += error[j] * W2[i][j];
+
+        }
+       
+    }
+    int target_index = word_id(vocablist , target);
+    if(target_index != -1 ){
+        for(int i = 0 ; i < D ; i++){
+            W1[target_index][i] -= lr * del_h[i];
+        }
+    }
+
+
 }
 
 
@@ -194,6 +234,7 @@ void word2vec :: prediction(){
     
     // Forward propagation using SKIP_Gram method   
     forward_pass(V , D , W1 , W2);
+
       
 
 } 
