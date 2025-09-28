@@ -30,9 +30,9 @@ class word2vec {
 
         int embedding_size = 50;
 
+        std::vector<float>expo;
         
-
-        
+        std::vector<float>prob;
 
         std::vector<std::pair<std::string , std::string >> training_pairs;
 
@@ -42,7 +42,8 @@ class word2vec {
     public: 
         void training();
         void makepair(const std::vector<std::string>& training_set);
-        void forward_pass(std::string , std::string );
+        void forward_pass( int V , int D ,std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2 );
+        
         void backward_pass();
         void prediction();
         

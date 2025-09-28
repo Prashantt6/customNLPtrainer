@@ -147,50 +147,54 @@ std::vector<float> multiply (const std::vector<float>& h , const std::vector<std
     return u;
 }
 
+void word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2){
+
+        for(int epoch = 0 ; epoch <1000 ; epoch++){
+            for(auto& word : training_pairs){
+                float total_loss = 0.0;
+                std::string target = word.first;
+                std::string context = word.second;
+                int wordindex = word_id(vocablist , target);
+                auto h = W1[wordindex];
+                auto u = multiply(h , W2 );
+                expo.clear();
+                float sum = 0;
+                for(int i = 0 ; i < V ; i++){
+                    float ex = exp(u[i]);
+                    expo.push_back(ex);
+                    sum += ex;
+                }
+                prob.clear();
+                for(int i = 0 ; i < V ; i++){
+                    float p = expo[i]/ sum;
+                    prob.push_back(p);
+                }
+
+                // Calculating loss 
+                int context_index = word_id(vocablist , context);
+                float loss = -log(prob[context_index]);
+                total_loss += loss ;
+                
+                // Loss for each epoch
+                std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;    
+                
+                
+            }
+        } 
+
+    
+}
+
 
 void word2vec :: prediction(){
     int V = vocablist.size();
     int D = 50;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
-    std::vector<float>expo;
-    std::vector<float>prob;
-    
     
     // Forward propagation using SKIP_Gram method   
-    for(int epoch = 0 ; epoch <1000 ; epoch++){
-        for(auto& word : training_pairs){
-            float total_loss = 0.0;
-            std::string target = word.first;
-            std::string context = word.second;
-            int wordindex = word_id(vocablist , target);
-            auto h = W1[wordindex];
-            auto u = multiply(h , W2 );
-            expo.clear();
-            float sum = 0;
-            for(int i = 0 ; i < V ; i++){
-                float ex = exp(u[i]);
-                expo.push_back(ex);
-                sum += ex;
-            }
-            prob.clear();
-            for(int i = 0 ; i < V ; i++){
-                float p = expo[i]/ sum;
-                prob.push_back(p);
-            }
-
-            // Calculating loss 
-            int context_index = word_id(vocablist , context);
-            float P = expo[context_index] /sum;
-            float loss = -log(P);
-            total_loss += loss ;
-            
-            // Loss for each epoch
-            std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;
-
-            
-        }
-    }   
+    forward_pass(V , D , W1 , W2);
+      
 
 } 
 
