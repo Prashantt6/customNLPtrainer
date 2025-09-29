@@ -152,7 +152,7 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
 
         for(int epoch = 0 ; epoch <1000 ; epoch++){
             for(auto& word : training_pairs){
-                
+                total_loss = 0.0;
                 std::string target = word.first;
                 std::string context = word.second;
                 int wordindex = word_id(vocablist , target);
@@ -173,6 +173,7 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
                 }
 
                 // Calculating loss 
+                
                 int context_index = word_id(vocablist , context);
                 float loss = -log(prob[context_index] + 1e-10);
                 total_loss += loss ;
@@ -238,7 +239,7 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
 }
 
 
-void word2vec :: prediction(std::string& word){
+void word2vec :: prediction( ){
     int V = vocablist.size();
     int D = 10;
     auto W1 = initialize_matrix(V , D);
@@ -250,6 +251,30 @@ void word2vec :: prediction(std::string& word){
     for(int j = 0 ; j <Word2vec.size() ; j++){
         wordsvec[vocablist[j]] = Word2vec[j];
     }
+    
+
+} 
+
+void word2vec :: vecofword(){
+    std::string input;
+    std::cout << "Enter a word : ";
+    std::getline(std::cin, input);
+    for(char& c : input) { c = std::tolower(c); }
+    
+    display(input);
+}
+
+void word2vec :: most_similar(){
+    std::string input;
+    std::cout<< "Enter the word : ";
+    std::getline(std::cin , input);
+    for(char&c : input){ c = std::tolower(c);}
+    
+    std::vector<std::vector<float>> inputvec;
+    
+
+}
+void word2vec:: display(std::string& word){
     for(auto data : wordsvec){
         if(word == data.first){
             std::vector<float> vec = data.second;
@@ -262,21 +287,47 @@ void word2vec :: prediction(std::string& word){
         }
     }
 
-} 
-
+}
 
 void word2vec :: word2vec_call(){
     training();
-    std::string input;
-    while (true) {
-        std::cout << "Enter a word (type 'exit' to quit): ";
-        std::getline(std::cin, input);
-        for(char& c : input) { c = std::tolower(c); }
-        if (input == "exit") break;
+    prediction();
+    // std::string input;
+    // while (true) {
+    //     std::cout << "Enter a word (type 'exit' to quit): ";
+    //     std::getline(std::cin, input);
+    //     for(char& c : input) { c = std::tolower(c); }
+    //     if (input == "exit") break;
        
-        prediction(input);
+    //     prediction(input);
         
-    }
+    // }
+    int ch ;
+    do{
+        std::cout<<" 1. Vector of a word "
+                <<" 2. Most Similar  " 
+                <<" 3. Exit ";
+        std::cout<<std::endl;
+        std::cout<<"Enter the choice : ";
+        std::cin >> ch;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        switch(ch){
+            case 1 :
+                vecofword();
+                break;
+            case 2 :
+                most_similar();
+                break;
+            default :
+                return ;
+
+
+        }      
+    }while(ch != 3);
+   
+    
+
 
 }
 

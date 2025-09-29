@@ -49,7 +49,10 @@ class word2vec {
         std::vector<std::vector<float>> forward_pass(int V , int D ,std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2 );
         
         void backward_pass(std::vector<float>& h ,std::vector<std::vector<float>>& W1, std::vector<std::vector<float>>& W2 , std::string& target , std::string& context );
-        void prediction(std::string& word);
+        void prediction();
+        void display(std::string& word);
+        void vecofword();
+        void most_similar();
         
         void word2vec_call();
 
