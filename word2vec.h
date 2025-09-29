@@ -28,9 +28,9 @@ class word2vec {
 
         int window = 5;
 
-        int embedding_size = 50;
+        int embedding_size = 10;
 
-        double lr = 0.01;
+        double lr = 0.001;
 
         float total_loss;
 

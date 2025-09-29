@@ -54,6 +54,7 @@ std::vector<std::string> word2vec :: preprocessing (const std::string &sentence)
 
     for (const auto& word : words) {
         if (stopwords.find(word) == stopwords.end()) {
+            
             result.push_back(word);
         }
     }
@@ -137,7 +138,7 @@ int word_id(std::vector<std::string>& vocablist ,std::string& target){
 
 std::vector<float> multiply (const std::vector<float>& h , const std::vector<std::vector<float>>& W2 ){
     int V = W2[0].size();
-    int D = h.size();
+    int D = W2.size();
     std::vector<float> u(V , 0.0);
     for(int i = 0 ; i< V ; i++){
         for( int j = 0 ; j< D  ; j++){
@@ -159,8 +160,9 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
                 auto u = multiply(h , W2 );
                 expo.clear();
                 float sum = 0;
+                float max_u = *std::max_element(u.begin() , u.end());
                 for(int i = 0 ; i < V ; i++){
-                    float ex = exp(u[i]);
+                    float ex = exp(u[i] - max_u);
                     expo.push_back(ex);
                     sum += ex;
                 }
@@ -172,7 +174,7 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
 
                 // Calculating loss 
                 int context_index = word_id(vocablist , context);
-                float loss = -log(prob[context_index]);
+                float loss = -log(prob[context_index] + 1e-10);
                 total_loss += loss ;
                 
                 // Backward pass 
@@ -181,7 +183,7 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
                 
             }
             // Loss for each epoch
-            std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;  
+            // std::cout << "Epoch " << epoch  << " - Avg Loss: " << total_loss / training_pairs.size()  << std::endl;  
         } 
 
         return W1;
@@ -191,13 +193,14 @@ std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::v
 }
 
 void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2, std::string& target , std::string& context){
-    std::vector<float>error(prob.size() , 0.0   ) ;
+    int D = h.size();
+    int V = prob.size();
+    std::vector<float>error(V , 0.0   ) ;
     std::vector<float> tempvec = wordsvec[context];
     for(int i = 0 ; i < prob.size() ; i++){
         error[i] = prob[i] - tempvec[i];
     }
-    int D = h.size();
-    int V = prob.size();
+    
 
     // Gradient for W2
     std::vector<std::vector<float>>del_W2(D , std::vector<float>(V , 0.0));
@@ -218,6 +221,11 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
         }
        
     }
+    for (auto &val : del_h) {
+        if (val > 5.0) val = 5.0;
+        if (val < -5.0) val = -5.0;
+    }
+
     int target_index = word_id(vocablist , target);
     if(target_index != -1 ){
         for(int i = 0 ; i < D ; i++){
@@ -232,7 +240,7 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
 
 void word2vec :: prediction(std::string& word){
     int V = vocablist.size();
-    int D = 50;
+    int D = 10;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
     
@@ -247,9 +255,10 @@ void word2vec :: prediction(std::string& word){
             std::vector<float> vec = data.second;
             std::cout<<" The vector representation of " << word <<" is : "<<std::endl;
             for(auto& num : vec){
-                std::cout<<num ;
+                std::cout<< num<< " " ;
 
             }
+            std::cout<<std::endl;
         }
     }
 
@@ -262,8 +271,9 @@ void word2vec :: word2vec_call(){
     while (true) {
         std::cout << "Enter a word (type 'exit' to quit): ";
         std::getline(std::cin, input);
+        for(char& c : input) { c = std::tolower(c); }
         if (input == "exit") break;
-
+       
         prediction(input);
         
     }
