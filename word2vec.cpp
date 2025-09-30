@@ -11,6 +11,7 @@
 #include <fstream>
 #include <random>
 #include <cmath>
+#include <map>
 
 // Loading training dataset through trainingdata.txt
 std::vector<std::string>word2vec :: load_training_data(const std::string &trainingdata) {
@@ -241,7 +242,7 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
 
 void word2vec :: prediction( ){
     int V = vocablist.size();
-    int D = 10;
+    int D = 3;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
     
@@ -263,14 +264,60 @@ void word2vec :: vecofword(){
     
     display(input);
 }
+float dotproduct(std::vector<float>& A , std::vector<float>& B){
+    float result = 0 ;
+    for(int i = 0 ; i < A.size() ; i++){
+        result += A[i] * B[i];
+    }
+    return result;
+}
+float Magnitude(std::vector<float>& vec){
+    float  M = 0;
+    for(float x : vec){
+        M += x * x ;
+    }
+    return std::sqrt(M); 
+}
 
 void word2vec :: most_similar(){
+    std::map<std::string , float> similarity_map;
     std::string input;
     std::cout<< "Enter the word : ";
     std::getline(std::cin , input);
     for(char&c : input){ c = std::tolower(c);}
     
-    std::vector<std::vector<float>> inputvec;
+    std::vector<float> inputvec;
+    if (wordsvec.find(input) != wordsvec.end()) {
+        inputvec = wordsvec[input];
+    } else {
+        std::cout << "Input word is not in vocabulary" << std::endl;
+        return;
+    }
+    
+    for(auto& word : wordsvec){
+        if( word.first != input){
+            float dot_prod = dotproduct(word.second , inputvec);
+            float magnitude_of_word = Magnitude(word.second);
+            float magnitude_of_input = Magnitude(inputvec);
+            std::cout<< " Dot product of " << word.first <<" "<<  input << " is " << dot_prod <<std::endl;
+            std::cout<< " Magnitude of vector of " << word.first << " is " << magnitude_of_word <<std::endl;
+            std::cout<< " Magnitude of vector of "<< input << " is " << magnitude_of_input << std::endl;
+            float Cosine_similarity = dot_prod / (magnitude_of_input * magnitude_of_word);
+            similarity_map[word.first ] = Cosine_similarity;
+        }
+        
+    }
+    int count = 5; 
+    std::cout<<" The top similar words with " << input << " is : " <<std::endl;
+
+        for(auto& word : similarity_map){
+            
+                std::cout<<word.first<< " = "<< word.second<<std::endl ;
+                 
+            
+        }
+    
+
     
 
 }
@@ -285,9 +332,12 @@ void word2vec:: display(std::string& word){
             }
             std::cout<<std::endl;
         }
+        // else {std::cout<<" Not in vocabulary"<<std::endl;}
     }
 
 }
+
+
 
 void word2vec :: word2vec_call(){
     training();
@@ -304,8 +354,8 @@ void word2vec :: word2vec_call(){
     // }
     int ch ;
     do{
-        std::cout<<" 1. Vector of a word "
-                <<" 2. Most Similar  " 
+        std::cout<<" 1. Vector of a word "<<std::endl
+                <<" 2. Most Similar  "<<std::endl 
                 <<" 3. Exit ";
         std::cout<<std::endl;
         std::cout<<"Enter the choice : ";
@@ -319,8 +369,11 @@ void word2vec :: word2vec_call(){
             case 2 :
                 most_similar();
                 break;
+            case 3 :
+                break;
             default :
-                return ;
+                std::cout<<"Invalid choice !!"<<std::endl;
+                break;
 
 
         }      
