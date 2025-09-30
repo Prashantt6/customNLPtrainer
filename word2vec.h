@@ -53,7 +53,7 @@ class word2vec {
         void display(std::string& word);
         void vecofword();
         void most_similar();
-        void case4();
+        
         
         void word2vec_call();
 

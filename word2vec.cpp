@@ -152,8 +152,9 @@ std::vector<float> multiply (const std::vector<float>& h , const std::vector<std
 std::vector<std::vector<float>>  word2vec :: forward_pass(int V , int D , std::vector<std::vector<float>>& W1 , std::vector<std::vector<float>>& W2){
 
         for(int epoch = 0 ; epoch <1000 ; epoch++){
+            total_loss = 0.0;
             for(auto& word : training_pairs){
-                total_loss = 0.0;
+                
                 std::string target = word.first;
                 std::string context = word.second;
                 int wordindex = word_id(vocablist , target);
@@ -242,7 +243,7 @@ void word2vec :: backward_pass(std::vector<float>& h ,std::vector<std::vector<fl
 
 void word2vec :: prediction( ){
     int V = vocablist.size();
-    int D = 3;
+    int D = 20;
     auto W1 = initialize_matrix(V , D);
     auto W2 = initialize_matrix(D , V );
     
@@ -299,41 +300,41 @@ void word2vec :: most_similar(){
             float dot_prod = dotproduct(word.second , inputvec);
             float magnitude_of_word = Magnitude(word.second);
             float magnitude_of_input = Magnitude(inputvec);
-            std::cout<< " Dot product of " << word.first <<" "<<  input << " is " << dot_prod <<std::endl;
-            std::cout<< " Magnitude of vector of " << word.first << " is " << magnitude_of_word <<std::endl;
-            std::cout<< " Magnitude of vector of "<< input << " is " << magnitude_of_input << std::endl;
+            // std::cout<< " Dot product of " << word.first <<" "<<  input << " is " << dot_prod <<std::endl;
+            // std::cout<< " Magnitude of vector of " << word.first << " is " << magnitude_of_word <<std::endl;
+            // std::cout<< " Magnitude of vector of "<< input << " is " << magnitude_of_input << std::endl;
             float Cosine_similarity = dot_prod / (magnitude_of_input * magnitude_of_word);
             similarity_map[word.first ] = Cosine_similarity;
-        }
+        } 
         
     }
-    int count = 5; 
-    std::cout<<" The top similar words with " << input << " is : " <<std::endl;
 
-        for(auto& word : similarity_map){
-            
-                std::cout<<word.first<< " = "<< word.second<<std::endl ;
-                 
-            
-        }
+    // Sorting similarity map in ascending order 
+    std::vector<std::pair<std::string , float >>vec (similarity_map.begin() , similarity_map.end());
+
+    std::sort(vec.begin() , vec.end(),[](const auto& a, const auto& b ){
+        return a.second > b.second ;
+    });
+    
+    std::cout<<" The top similar words with " << input << " is : " <<std::endl;
+    int limit = std::min(5, (int)vec.size());
+    for( int i = 0 ; i < limit ; i++){
+        std::cout<<vec[i].first << " : " <<vec[i].second << std::endl;
+    }
     
 
     
 
 }
 void word2vec:: display(std::string& word){
-    for(auto data : wordsvec){
-        if(word == data.first){
-            std::vector<float> vec = data.second;
-            std::cout<<" The vector representation of " << word <<" is : "<<std::endl;
-            for(auto& num : vec){
-                std::cout<< num<< " " ;
+        if (wordsvec.find(word) != wordsvec.end()) {
+            for (auto &num : wordsvec[word]) std::cout << num << " ";
+            std::cout << std::endl;
+         } 
+         else {
+        std::cout << "Not in vocabulary\n";
+         }
 
-            }
-            std::cout<<std::endl;
-        }
-        // else {std::cout<<" Not in vocabulary"<<std::endl;}
-    }
 
 }
 
