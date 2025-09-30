@@ -262,9 +262,24 @@ void word2vec :: vecofword(){
     std::cout << "Enter a word : ";
     std::getline(std::cin, input);
     for(char& c : input) { c = std::tolower(c); }
-    
+    std::cout<<"The vector representation of " << input << "is : "<<std::endl;
     display(input);
 }
+
+void word2vec:: display(std::string& word){
+        if (wordsvec.find(word) != wordsvec.end()) {
+            for (auto &num : wordsvec[word]) std::cout << num << " ";
+            std::cout << std::endl;
+         } 
+         else {
+        std::cout << "Not in vocabulary\n";
+         }
+        std::cout<<std::endl;
+
+
+}
+
+
 float dotproduct(std::vector<float>& A , std::vector<float>& B){
     float result = 0 ;
     for(int i = 0 ; i < A.size() ; i++){
@@ -272,6 +287,8 @@ float dotproduct(std::vector<float>& A , std::vector<float>& B){
     }
     return result;
 }
+
+
 float Magnitude(std::vector<float>& vec){
     float  M = 0;
     for(float x : vec){
@@ -279,6 +296,7 @@ float Magnitude(std::vector<float>& vec){
     }
     return std::sqrt(M); 
 }
+
 
 void word2vec :: most_similar(){
     std::map<std::string , float> similarity_map;
@@ -316,27 +334,14 @@ void word2vec :: most_similar(){
         return a.second > b.second ;
     });
     
-    std::cout<<" The top similar words with " << input << " is : " <<std::endl;
+    std::cout<<"The top similar words with " << input << " is :  " <<std::endl;
     int limit = std::min(5, (int)vec.size());
     for( int i = 0 ; i < limit ; i++){
         std::cout<<vec[i].first << " : " <<vec[i].second << std::endl;
     }
-    
-
-    
-
+    std::cout<<std::endl;
 }
-void word2vec:: display(std::string& word){
-        if (wordsvec.find(word) != wordsvec.end()) {
-            for (auto &num : wordsvec[word]) std::cout << num << " ";
-            std::cout << std::endl;
-         } 
-         else {
-        std::cout << "Not in vocabulary\n";
-         }
 
-
-}
 
 
 
@@ -358,11 +363,12 @@ void word2vec :: word2vec_call(){
         std::cout<<" 1. Vector of a word "<<std::endl
                 <<" 2. Most Similar  "<<std::endl 
                 <<" 3. Exit ";
-        std::cout<<std::endl;
+        std::cout<<std::endl<<std::endl;
+
         std::cout<<"Enter the choice : ";
         std::cin >> ch;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
+        std::cout<<std::endl;
         switch(ch){
             case 1 :
                 vecofword();

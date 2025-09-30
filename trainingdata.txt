@@ -1,6 +1,18 @@
-I love natural language processing
-Word embeddings capture semantic meaning
 The quick brown fox jumps over the lazy dog
-Machine learning is fun and powerful
-I enjoy coding in C++
-Neural networks can understand language
+Dogs are loyal animals and they love their owners
+Foxes are clever and quick in the wild
+Cats are graceful and love to sleep all day
+The dog chased the cat across the yard
+The cat climbed the tree to escape from the dog
+Apples and bananas are popular fruits
+Mango is called the king of fruits
+I love eating fresh apples and ripe mangoes
+The programmer writes code in C++ and Python
+Python is popular for machine learning and AI
+C++ is powerful for system programming
+Football is the most popular sport in the world
+Lionel Messi is the greatest football player
+Cristiano Ronaldo is also a legendary striker
+Students study mathematics and computer science
+The computer runs fast with more memory and storage
+Artificial intelligence is changing the future
